@@ -1,7 +1,8 @@
 use noise::{NoiseFn, OpenSimplex};
 
-pub fn generate() -> f64{
+pub fn generate(x: f64, y: f64) -> f64{
+    // we need to feed coordinates
     let opensimplex = OpenSimplex::new(2);
-    let val = opensimplex.get([1.0, 1.0]);
+    let val = opensimplex.get([x, y]);
     return val;
 }
