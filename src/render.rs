@@ -1,19 +1,10 @@
-use image::{GrayImage, Luma};
+use image::{GrayImage, Luma, Rgb, RgbImage};
 
 pub fn render(buffer: &[Vec<f64>], path: &str){
     let (width, height) = dimensions(buffer);
     let (min, max) = value_bounds(buffer);
     let range = (max-min).max(f64::EPSILON); // prevent div by 0 with tiny EPSILON
     
-    // what does this crap do?
-    // idk let's do it how I want to
-    /*
-    let img = GrayImage::from_fn(width, height, |x, y| {
-            let t = (buffer[y as usize][x as usize] - min) / range;
-            Luma([(t * 255.0).round() as u8])
-        });
-    */
-
     let mut image = GrayImage::new(height, width);
     // my brother in christ, first run had the dims swapped :sob:
     for i in 0..height {
@@ -26,6 +17,45 @@ pub fn render(buffer: &[Vec<f64>], path: &str){
     }
 
     let _ = image.save(path);
+}
+
+pub fn render_color(buffer: &[Vec<f64>], path: &str){
+    let (width, height) = dimensions(buffer);
+    // let (min, max) = value_bounds(buffer);
+    // let range = (max - min).max(f64::EPSILON);
+
+    let mut image = RgbImage::new(height, width);
+    
+    for i in 0..height {
+        for j in 0..width {
+            let raw = buffer[j as usize][i as usize];
+            let h = ((raw + 1.0) / 2.0).clamp(0.0, 1.0);
+            image.put_pixel(i, j, color_for(h));
+        }
+    }
+
+    if let Err(e) = image.save(path) {
+        eprint!("couldn't save {path}: {e}");
+    }
+    
+}
+
+fn color_for(h: f64) -> Rgb<u8> {
+    if h < 0.35 {
+        Rgb([20, 40, 110])       // deep water
+    } else if h < 0.45 {
+        Rgb([40, 80, 160])       // shallow water
+    } else if h < 0.48 {
+        Rgb([210, 200, 140])     // beach
+    } else if h < 0.62 {
+        Rgb([70, 140, 60])       // grass
+    } else if h < 0.75 {
+        Rgb([35, 90, 40])        // forest
+    } else if h < 0.85 {
+        Rgb([110, 100, 90])      // rock
+    } else {
+        Rgb([240, 240, 245])     // snow
+    }
 }
 
 fn dimensions(buffer: &[Vec<f64>]) -> (u32, u32){

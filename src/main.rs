@@ -3,22 +3,17 @@ mod render;
 
 use noise::OpenSimplex;
 
-/*
-fn print_vector(v: Vec<Vec<f64>>)  {
-    for i in 0..v.len() {
-        for j in 0..v[i].len(){
-            let k: f64 = v[i][j];
-            let s = format!("{:.2}", k);
-            print!("{s}\t");
-        }
-        println!("");
-    }
-}
-*/
-
 fn main() {
     // do it here to save steps in terrain
-    let noise = OpenSimplex::new(2);
+    
+    let seed: u32 = match std::env::args().nth(1) {
+        Some(arg) => arg.parse().expect("seed should be u32"),
+        None => rand::random(),
+    };
+    println!("Seed: {seed}");
+
+    // throw that mug in OS
+    let noise = OpenSimplex::new(seed);
 
     // we can probably use arrays for fixed-size images
     let mut v: Vec<Vec<f64>> = Vec::new();
@@ -35,6 +30,7 @@ fn main() {
         v.push(row);
     }
 
-    render::render(&v, "images/noise.png");
+    render::render(&v, &format!("images/noise_{seed}_grayscale.png"));
+    render::render_color(&v, &format!("images/noise_{seed}_color.png"));
 
 }
