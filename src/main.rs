@@ -32,5 +32,6 @@ fn main() {
 
     render::render(&v, &format!("images/noise_{seed}_grayscale.png"));
     render::render_color(&v, &format!("images/noise_{seed}_color.png"));
+    render::render_shaded(&v, &format!("images/noise_{seed}_shaded.png"));
 
 }

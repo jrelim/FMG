@@ -1,0 +1,5 @@
+https://docs.rs/noise/0.9.0/noise/struct.OpenSimplex.html
+https://docs.rs/image/0.25.10/image/struct.ImageBuffer.html#method.from_fn
+https://github.com/cageo/Zhou-2016/blob/master/main.cpp
+https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm#Algorithm
+
